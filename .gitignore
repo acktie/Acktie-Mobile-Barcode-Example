@@ -11,3 +11,4 @@ tmp
 _svn
 svn-commit*.tmp
 build
+build.log
