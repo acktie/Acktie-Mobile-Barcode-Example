@@ -47,6 +47,6 @@
     </mobileweb>
     <modules>
         <module platform="android" version="1.1">com.acktie.mobile.android.barcode</module>
-        <module platform="iphone" version="1.1">com.acktie.mobile.ios.barcode</module>
+        <module platform="iphone" version="1.2">com.acktie.mobile.ios.barcode</module>
     </modules>
 </ti:app>

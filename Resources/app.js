@@ -4,6 +4,15 @@ var barcodereader = undefined;
 var barcodeCodeWindow = undefined;
 var barcodeCodeView = undefined;
 
+var self = Ti.UI.createWindow({
+	backgroundColor : 'white',
+	title: "Acktie Mobile Barcode",
+});
+
+var navGroup = Ti.UI.iPhone.createNavigationGroup({
+	window:self
+});
+
 // Depending on the platform, load the appropriate barcode module
 if (Ti.Platform.osname === 'iphone' || Ti.Platform.osname === 'ipad') {
 	barcodereader = require('com.acktie.mobile.ios.barcode');
@@ -59,11 +68,6 @@ var CODE = [
     "CODE93",
     "CODE128",];
 
-// open a single window
-var self = Ti.UI.createWindow({
-	backgroundColor : 'white'
-});
-
 /**
  * Read Barcode from a Photo Album (Detect all barcodes)
  * NOTE: Android does not currently support reading from the Image Gallery
@@ -79,6 +83,7 @@ barcodeFromAlbumButton.addEventListener('click', function() {
 	// Android does not currently support reading from the Image Gallery
 	if (Ti.Platform.osname === 'iphone' || Ti.Platform.osname === 'ipad') {
 		barcodereader.scanBarcodeFromAlbum({
+			view : barcodeFromAlbumButton, //Only for the iPad
 			success : success,
 			cancel : cancel,
 			error : error,
@@ -91,8 +96,25 @@ barcodeFromAlbumButton.addEventListener('click', function() {
 
 self.add(barcodeFromAlbumButton);
 
+// Add Scan button from right nav bar on iPad
+if (Ti.Platform.osname === 'ipad') {
+	var navButton = Titanium.UI.createButton({
+		title : 'Scan from Album'
+	});
+	self.rightNavButton = navButton;
+
+	navButton.addEventListener('click', function() {
+		barcodereader.scanBarcodeFromAlbum({
+			navBarButton : navButton, //Only for the iPad
+			success : success,
+			cancel : cancel,
+			error : error,
+		});
+	});
+}
+
 /**
- * Read Barcode code from the Camera feed.  Once the QR code is read it will
+ * Read Barcode code from the Camera feed.  Once the Barcode code is read it will
  * stop scanning.
  */
 var barcodeFromCameraButton = Titanium.UI.createButton({
@@ -379,4 +401,6 @@ if (Ti.Platform.osname === 'android') {
 	});
 }
 
-self.open();
+var main = Ti.UI.createWindow();
+main.add(navGroup);
+main.open();
